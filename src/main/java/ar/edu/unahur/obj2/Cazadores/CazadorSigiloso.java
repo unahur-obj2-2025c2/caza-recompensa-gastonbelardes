@@ -8,54 +8,49 @@ import ar.edu.unahur.obj2.Zona.Zona;
 
 public class CazadorSigiloso extends Cazador {
 
-List<IProfugo> capturados = new ArrayList<>();
-
-List<IProfugo> intimidados = new ArrayList<>();
-
-
-@Override
+    @Override
     public void capturar(Zona zona) {
-        List<IProfugo> capturadosLocal = new ArrayList<>();
-
-        List<IProfugo> intimidados = new ArrayList<>();
-        
+        // Lista temporal para no modificar la zona mientras iteramos
+        List<IProfugo> capturadosTemp = new ArrayList<>();
 
         for (IProfugo profugo : zona.getProfugos()) {
             if (puedeCapturar(profugo)) {
-                capturadosLocal.add(profugo);
+                capturadosTemp.add(profugo);
             } else {
                 intimidados.add(profugo);
             }
         }
-        
+
+        // Aplicar intimidación
         for (IProfugo profugo : intimidados) {
-            profugo.disminuirInocencia();  // efecto general
-            aplicarIntimidacion(profugo);  // efecto específico del tipo de cazador
+            profugo.disminuirInocencia();        // efecto general
+            aplicarIntimidacion(profugo);        // efecto específico del sigiloso
         }
 
-        for (IProfugo profugo : capturadosLocal) {
+        // Mover capturados de la zona a la lista del cazador
+        for (IProfugo profugo : capturadosTemp) {
             zona.eliminarProfugo(profugo);
-            this.capturados.add(profugo);
+            capturados.add(profugo);
         }
 
+        // Incrementar experiencia
         int minHabilidad = intimidados.stream()
                 .mapToInt(IProfugo::getHabilidad)
                 .min()
                 .orElse(0);
 
-        this.experiencia += minHabilidad + 2 * capturadosLocal.size();
+        experiencia += minHabilidad + 2 * capturadosTemp.size();
     }
 
-@Override
+    @Override
     protected boolean puedeCapturar(IProfugo profugo) {
-        return this.experiencia > profugo.getInocencia() && profugo.getHabilidad() < 50;
+        return experiencia > profugo.getInocencia() && profugo.getHabilidad() < 50;
     }
 
-@Override
+    @Override
     protected void aplicarIntimidacion(IProfugo profugo) {
-        profugo.reducirHabilidad(); // efecto específico del sigiloso
+        profugo.reducirHabilidad();
     }
-
-    }
+}
 
 

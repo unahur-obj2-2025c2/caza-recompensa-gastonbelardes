@@ -5,6 +5,12 @@ public class Profugos implements IProfugo {
     private Integer habilidad;
     private Boolean nervioso;
 
+    public Profugos(Integer habilidad, Integer inocencia, Boolean nervioso) {
+        this.habilidad = habilidad;
+        this.inocencia = inocencia;
+        this.nervioso = nervioso;
+    }
+
     @Override
     public Integer getInocencia() {
         return this.inocencia;

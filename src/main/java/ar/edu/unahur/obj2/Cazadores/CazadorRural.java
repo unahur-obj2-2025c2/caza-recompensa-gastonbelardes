@@ -6,29 +6,47 @@ import java.util.List;
 import ar.edu.unahur.obj2.Profugos.IProfugo;
 import ar.edu.unahur.obj2.Zona.Zona;
 
-public class CazadorRural extends Cazador{
+public class CazadorRural extends Cazador {
 
-List<IProfugo> capturados = new ArrayList<>();
+    @Override
+    public void capturar(Zona zona) {
+        List<IProfugo> capturadosTemp = new ArrayList<>();
 
-List<IProfugo> intimidados = new ArrayList<>();
+        for (IProfugo profugo : zona.getProfugos()) {
+            if (puedeCapturar(profugo)) {
+                capturadosTemp.add(profugo);
+            } else {
+                intimidados.add(profugo);
+            }
+        }
 
-@Override
-public void capturar(Zona zona) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'capturar'");
+        for (IProfugo profugo : intimidados) {
+            profugo.disminuirInocencia();
+            aplicarIntimidacion(profugo);
+        }
+
+        for (IProfugo profugo : capturadosTemp) {
+            zona.eliminarProfugo(profugo);
+            capturados.add(profugo);
+        }
+
+        int minHabilidad = intimidados.stream()
+                .mapToInt(IProfugo::getHabilidad)
+                .min()
+                .orElse(0);
+
+        experiencia += minHabilidad + 2 * capturadosTemp.size();
+    }
+
+    @Override
+    protected boolean puedeCapturar(IProfugo profugo) {
+        return experiencia > profugo.getInocencia() && profugo.esNervioso();
+    }
+
+    @Override
+    protected void aplicarIntimidacion(IProfugo profugo) {
+        profugo.volverseNervioso();
+    }
 }
 
-@Override
-protected boolean puedeCapturar(IProfugo profugo) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'puedeCapturar'");
-}
-
-@Override
-protected void aplicarIntimidacion(IProfugo profugo) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'aplicarIntimidacion'");
-}
-
-}
 

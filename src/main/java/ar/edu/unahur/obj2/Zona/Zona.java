@@ -10,21 +10,21 @@ import ar.edu.unahur.obj2.Profugos.IProfugo;
 public class Zona {
     private String nombre;
 
-    List<IProfugo> profugos;
+    List<IProfugo> listaProfugos = new ArrayList<>();
 
     
 
-    public Zona(List<IProfugo> profugos) {
-        this.profugos = new ArrayList<>(profugos);
+    public Zona(String nombre, List<IProfugo> listaProfugos) {
+        this.listaProfugos = new ArrayList<>(listaProfugos);
     }
     
 
     public List<IProfugo> getProfugos() {
-        return profugos;
+        return listaProfugos;
     }
 
     public void eliminarProfugo(IProfugo profugo) {
-        profugos.remove(profugo);
+        listaProfugos.remove(profugo);
     }
 
 }
